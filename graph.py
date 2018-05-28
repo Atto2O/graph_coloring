@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from networkx import*
+import networkx as nx
 #import pygraphviz
 import commands
 import sys
@@ -13,6 +13,24 @@ num_vars = 0
 num_clauses = 0
 solution = []
 edge_Probability = 0.0
+llista_nodes = []
+colors = {
+'1' : "00FFFF",
+'2' : "00CC99",
+'3' : "00FF00",
+'4' : "FFFF00",
+'5' : "FF0000",
+'6' : "FFA31A",
+'7' : "8000FF",
+'8' : "CC00CC",
+'9' : "FFB3D9",
+'10' : "800000",
+'11' : "336600",
+'12' : "000099",
+'13' : "CCCCFF",
+'14' : "660066",
+'15' : "000000",
+}
 
 #create cnf for edge
 def code_aresta(node1,node2):
@@ -31,6 +49,7 @@ def code_aresta(node1,node2):
 #assign color to node        
 def assignar_colorete(solution):
 	global max_color
+	global llista_nodes
 	llista_nodes = []
 	solutionfound = False
 	cont = 0
@@ -39,7 +58,7 @@ def assignar_colorete(solution):
 		if item > 0 and solutionfound == False:
 			llista_nodes.append(item)
 			solutionfound = True
-		if cont > max_color-1:
+		if cont > int(max_color)-1:
 			solutionfound = False
 			cont = 0
 	print "llista_nodes: ",llista_nodes
@@ -87,8 +106,8 @@ def create_amo():
     alo_cnf = []
     num = 0
 
-    for y in range(1, num_nodes+1):
-        for i in range(1, max_color+1):
+    for y in range(1, int(num_nodes)+1):
+        for i in range(1, int(max_color)+1):
             num = num + 1
             alo_cnf.append(num)
             num_vars = num_vars +1
@@ -100,8 +119,9 @@ def create_graph():
     global max_color
     global num_nodes
     global edge_Probability
+	global G
 
-    #G = nx.Graph()
+    G = nx.Graph()
     #G = nx.complete_graph(num_nodes)
   
 
@@ -122,9 +142,15 @@ def create_graph():
     #G.draw("G.png", format='png')
 
 def draw_graf():
-    global solution
+	global solution
+	global colors
+	global max_color
+	global G
+
+	for i in range(1, int(num_nodes)+1):
+		G.get_node(i).attr['fillcolor'] = G.color_codes[colors.get((int(llista_nodes[i-1])%(int(max_color) ))+1)]
     
-    print "print solution",solution
+	print "print solution",solution
   
 def parse_solution():
     global solution
@@ -170,16 +196,21 @@ def read_parameters():
         print "Format Error: Arguments invalids cargats els per defecte\nFormat: graph.py <nodes> <number colors> <edge probability>"
 		
 def main():
+	global solution
+	global max_color
+	global llista_nodes
+	global G
 
-    read_parameters()
-    create_graph() 
-    create_amo()
-    write_cnf()
-    parse_solution()
-    assignar_colorete(solution)
+	read_parameters()
+	create_graph() 
+	create_amo()
+	write_cnf()
+	parse_solution()
+	assignar_colorete(solution)
     draw_graf()
 
-
+	G.a_graph.layout()
+	G.a_graph.draw("out.png", format = 'png')
 
 if __name__ == '__main__': 
     main()
