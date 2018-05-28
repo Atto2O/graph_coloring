@@ -95,12 +95,11 @@ def create_amo():
         alo_cnf.append(0)
         num_clauses = num_clauses +1
 
-def draw():
+def create_graph():
 
     global max_color
     global num_nodes
     global edge_Probability
-    global solution
 
     #G = nx.Graph()
     #G = nx.complete_graph(num_nodes)
@@ -121,6 +120,11 @@ def draw():
     #A = to_agraph(G)
     #G.layout()
     #G.draw("G.png", format='png')
+
+def draw_graf():
+    global solution
+    
+    print "print solution",solution
   
 def parse_solution():
     global solution
@@ -168,11 +172,12 @@ def read_parameters():
 def main():
 
     read_parameters()
-    draw() 
+    create_graph() 
     create_amo()
     write_cnf()
     parse_solution()
     assignar_colorete(solution)
+    draw_graf()
 
 
 
