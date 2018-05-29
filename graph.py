@@ -242,6 +242,7 @@ def main():
     read_parameters()
     create_graph()
     create_alo()
+    create_amo()
     write_cnf()
     parse_solution()
     assignar_colorete(solution)
