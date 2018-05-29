@@ -1,10 +1,11 @@
 #!/usr/bin/python
 
-import networkx as nx
-#import pygraphviz
+
 import commands
-import sys
 import random
+import sys
+import networkx as nx
+
 
 max_color = 3
 arestes_c = []
@@ -12,26 +13,26 @@ alo_cnf = []
 num_vars = 0
 num_clauses = 0
 solution = []
-edge_Probability = 0.0
+edge_probability = 0.0
 llista_nodes = []
 colors = {
-'1' : "00FFFF",
-'2' : "00CC99",
-'3' : "00FF00",
-'4' : "FFFF00",
-'5' : "FF0000",
-'6' : "FFA31A",
-'7' : "8000FF",
-'8' : "CC00CC",
-'9' : "FFB3D9",
-'10' : "800000",
-'11' : "336600",
-'12' : "000099",
-'13' : "CCCCFF",
-'14' : "660066",
-'15' : "000000",
+'1' : "#00FFFF",
+'2' : "#00CC99",
+'3' : "#00FF00",
+'4' : "#FFFF00",
+'5' : "#FF0000",
+'6' : "#FFA31A",
+'7' : "#8000FF",
+'8' : "#CC00CC",
+'9' : "#FFB3D9",
+'10' : "#800000",
+'11' : "#336600",
+'12' : "#000099",
+'13' : "#CCCCFF",
+'14' : "#660066",
+'15' : "#000000",
 }
-
+G = nx.Graph()
 #create cnf for edge
 def code_aresta(node1,node2):
     global num_vars
@@ -39,7 +40,7 @@ def code_aresta(node1,node2):
     global arestes_c
     global max_color
 
-    for i in range(1, max_color+1):
+    for i in range(1, int(max_color)+1):
         arestes_c.append(-((node1-1)*max_color+i))
         arestes_c.append(-((node2-1)*max_color+i))
         arestes_c.append(0)
@@ -48,20 +49,20 @@ def code_aresta(node1,node2):
 
 #assign color to node        
 def assignar_colorete(solution):
-	global max_color
-	global llista_nodes
-	llista_nodes = []
-	solutionfound = False
-	cont = 0
-	for item in solution:
-		cont = cont + 1
-		if item > 0 and solutionfound == False:
-			llista_nodes.append(item)
-			solutionfound = True
-		if cont > int(max_color)-1:
-			solutionfound = False
-			cont = 0
-	print "llista_nodes: ",llista_nodes
+    global max_color
+    global llista_nodes
+    llista_nodes = []
+    solutionfound = False
+    cont = 0
+    for item in solution:
+        cont = cont + 1
+        if item > 0 and solutionfound == False:
+            llista_nodes.append(item)
+            solutionfound = True
+        if cont > int(max_color)-1:
+            solutionfound = False
+            cont = 0
+    print "llista_nodes: ", llista_nodes
 
 #write cnf in file
 def write_cnf():
@@ -119,9 +120,8 @@ def create_graph():
     global max_color
     global num_nodes
     global edge_Probability
-	global G
+    global G
 
-    G = nx.Graph()
     #G = nx.complete_graph(num_nodes)
   
 
@@ -142,16 +142,27 @@ def create_graph():
     #G.draw("G.png", format='png')
 
 def draw_graf():
-	global solution
-	global colors
-	global max_color
-	global G
+    global solution
+    global colors
+    global max_color
+    global G
+    global llista_nodes
 
-	for i in range(1, int(num_nodes)+1):
-		G.get_node(i).attr['fillcolor'] = G.color_codes[colors.get((int(llista_nodes[i-1])%(int(max_color) ))+1)]
+    A = nx.nx_agraph.to_agraph(G)
+    A.node_attr['style'] = 'filled'
+    A.node_attr['width'] = '0.4'
+    A.node_attr['height'] = '0.4'
+    A.edge_attr['color'] = '#000000'
+    for i in range(1, num_nodes+1):
+        color  = colors.get(str(int(llista_nodes[i-1])%(int(max_color))+1))
+        print color
+        A.get_node(i).attr['fillcolor'] = color
     
-	print "print solution",solution
-  
+    print "print solution",solution
+
+    A.layout()
+    A.draw("out.png", format='png')
+
 def parse_solution():
     global solution
     
@@ -189,28 +200,26 @@ def read_parameters():
     edge_Probability = 0.5
       
     if len(sys.argv) == 4:        
-        num_nodes = sys.argv[1]
-        max_color = sys.argv[2]
-        edge_Probability = sys.argv[3]
+        num_nodes = int(sys.argv[1])
+        max_color = int(sys.argv[2])
+        edge_Probability = float(sys.argv[3])
     else:   
         print "Format Error: Arguments invalids cargats els per defecte\nFormat: graph.py <nodes> <number colors> <edge probability>"
-		
-def main():
-	global solution
-	global max_color
-	global llista_nodes
-	global G
 
-	read_parameters()
-	create_graph() 
-	create_amo()
-	write_cnf()
-	parse_solution()
-	assignar_colorete(solution)
+def main():
+    global solution
+    global max_color
+    global llista_nodes
+    global G
+
+    read_parameters()
+    create_graph()
+    create_amo()
+    write_cnf()
+    parse_solution()
+    assignar_colorete(solution)
     draw_graf()
 
-	G.a_graph.layout()
-	G.a_graph.draw("out.png", format = 'png')
 
 if __name__ == '__main__': 
     main()
