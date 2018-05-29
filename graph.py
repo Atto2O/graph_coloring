@@ -131,7 +131,7 @@ def create_amo():
     global amo_cnf
     global max_color
     global num_nodes
-
+    global num_clauses
     for y in range(1, int(num_nodes)+1):
         for i in range(1, int(max_color)+1):
             for x in range(i+1, int(max_color)+1):
