@@ -57,7 +57,7 @@ def assignar_colorete(solution):
     cont = 0
     for item in solution:
         cont = cont + 1
-        if item > 0 and solutionfound == False:
+        if item > 0:
             llista_nodes.append(item)
             solutionfound = True
         if cont > int(max_color)-1:
@@ -133,12 +133,12 @@ def create_amo():
     global num_nodes
     global num_clauses
 
+
     for y in range(1, int(num_nodes)+1):
         for i in range(1, int(max_color)+1):
             for x in range(i+1, int(max_color)+1):
-
-                amo_cnf.append(-i)
-                amo_cnf.append(-x)
+                amo_cnf.append(-(i + (y-1) * max_color))
+                amo_cnf.append(-(x + (y-1) * max_color))
                 amo_cnf.append(0)
                 num_clauses = num_clauses +1
 
@@ -196,24 +196,13 @@ def parse_solution():
 
     startload = False
     next_number_negative = False
-    result = commands.getoutput('./spiderman.py testfile.txt')
+    result = commands.getoutput('./otk_sat.py testfile.txt')
+    markers = ["s", "SATISFIABLE", "v", "0"]
     solution = []
-    print result
-    for item in result:
-        if item == "v":
-            startload = True
-        elif startload == True:
-            if item != " ":
-                if item == "-":
-                    next_number_negative = True
-                else:
-                    if next_number_negative == True:
-                        solution.append(int(item)*-1)
-                        next_number_negative = False
-                    else:
-                        solution.append(int(item))
-
-    print "solution",solution
+    for value in result.split():
+        if value not in markers:
+            solution.append(int(value))
+    print "solution", solution
 
 def read_parameters():
 
