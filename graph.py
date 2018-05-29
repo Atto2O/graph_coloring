@@ -10,6 +10,7 @@ import networkx as nx
 max_color = 3
 arestes_c = []
 alo_cnf = []
+amo_cnf = []
 num_vars = 0
 num_clauses = 0
 solution = []
@@ -70,6 +71,7 @@ def write_cnf():
     global num_clauses
     global arestes_c
     global alo_cnf
+    global amo_cnf
 
     file = open("testfile.txt","w") 
     file.write("c Random CNF formula\n") 
@@ -93,12 +95,21 @@ def write_cnf():
             file.write("\n") 
         else:
             file.write(str(item))
+            file.write(" ")
+
+    for item in amo_cnf:
+        if item == 0:  
+            file.write("0") 
+            file.write("\n") 
+        else:
+            file.write(str(item))
             file.write(" ") 
+ 
  
     file.close()
 
 #create clausules amo
-def create_amo():
+def create_alo():
     global max_color
     global alo_cnf
     global num_vars
@@ -114,6 +125,22 @@ def create_amo():
             num_vars = num_vars +1
         alo_cnf.append(0)
         num_clauses = num_clauses +1
+
+def create_amo():
+    global num_vars
+    global amo_cnf
+    global max_color
+    global num_nodes
+
+    for y in range(1, int(num_nodes)+1):
+        for i in range(1, int(max_color)+1):
+            for x in range(i+1, int(max_color)+1):
+                
+                amo_cnf.append(-i)
+                amo_cnf.append(-x)
+                amo_cnf.append(0)                
+                num_clauses = num_clauses +1
+            
 
 def create_graph():
 
@@ -214,7 +241,7 @@ def main():
 
     read_parameters()
     create_graph()
-    create_amo()
+    create_alo()
     write_cnf()
     parse_solution()
     assignar_colorete(solution)
