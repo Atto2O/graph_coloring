@@ -48,7 +48,7 @@ def code_aresta(node1,node2):
         num_clauses = num_clauses +1
 
 
-#assign color to node        
+#assign color to node
 def assignar_colorete(solution):
     global max_color
     global llista_nodes
@@ -73,8 +73,8 @@ def write_cnf():
     global alo_cnf
     global amo_cnf
 
-    file = open("testfile.txt","w") 
-    file.write("c Random CNF formula\n") 
+    file = open("testfile.txt","w")
+    file.write("c Random CNF formula\n")
     file.write("p cnf ")
     file.write(str(num_vars))
     file.write(" ")
@@ -82,30 +82,30 @@ def write_cnf():
     file.write("\n")
 
     for item in alo_cnf:
-        if item == 0:  
-            file.write("0") 
-            file.write("\n") 
+        if item == 0:
+            file.write("0")
+            file.write("\n")
         else:
             file.write(str(item))
             file.write(" ")
-   
+
     for item in arestes_c:
-        if item == 0:  
-            file.write("0") 
-            file.write("\n") 
+        if item == 0:
+            file.write("0")
+            file.write("\n")
         else:
             file.write(str(item))
             file.write(" ")
 
     for item in amo_cnf:
-        if item == 0:  
-            file.write("0") 
-            file.write("\n") 
+        if item == 0:
+            file.write("0")
+            file.write("\n")
         else:
             file.write(str(item))
-            file.write(" ") 
- 
- 
+            file.write(" ")
+
+
     file.close()
 
 #create clausules amo
@@ -132,15 +132,16 @@ def create_amo():
     global max_color
     global num_nodes
     global num_clauses
+
     for y in range(1, int(num_nodes)+1):
         for i in range(1, int(max_color)+1):
             for x in range(i+1, int(max_color)+1):
-                
+
                 amo_cnf.append(-i)
                 amo_cnf.append(-x)
-                amo_cnf.append(0)                
+                amo_cnf.append(0)
                 num_clauses = num_clauses +1
-            
+
 
 def create_graph():
 
@@ -150,7 +151,7 @@ def create_graph():
     global G
 
     #G = nx.complete_graph(num_nodes)
-  
+
 
     #create nodes
     for i in range(1,int(num_nodes)+1):
@@ -163,7 +164,7 @@ def create_graph():
                 G.add_edge(i, j)
                 print "a fet aresta de ",i," a ",j
                 code_aresta(i,j)
-    
+
     #A = to_agraph(G)
     #G.layout()
     #G.draw("G.png", format='png')
@@ -184,7 +185,7 @@ def draw_graf():
         color  = colors.get(str(int(llista_nodes[i-1])%(int(max_color))+1))
         print color
         A.get_node(i).attr['fillcolor'] = color
-    
+
     print "print solution",solution
 
     A.layout()
@@ -192,7 +193,7 @@ def draw_graf():
 
 def parse_solution():
     global solution
-    
+
     startload = False
     next_number_negative = False
     result = commands.getoutput('./spiderman.py testfile.txt')
@@ -211,9 +212,9 @@ def parse_solution():
                         next_number_negative = False
                     else:
                         solution.append(int(item))
-    
-    print "solution",solution    
-    
+
+    print "solution",solution
+
 def read_parameters():
 
     global solution
@@ -225,12 +226,12 @@ def read_parameters():
     max_color = 3
     num_nodes = 3
     edge_Probability = 0.5
-      
-    if len(sys.argv) == 4:        
+
+    if len(sys.argv) == 4:
         num_nodes = int(sys.argv[1])
         max_color = int(sys.argv[2])
         edge_Probability = float(sys.argv[3])
-    else:   
+    else:
         print "Format Error: Arguments invalids cargats els per defecte\nFormat: graph.py <nodes> <number colors> <edge probability>"
 
 def main():
@@ -249,8 +250,5 @@ def main():
     draw_graf()
 
 
-if __name__ == '__main__': 
+if __name__ == '__main__':
     main()
-    
-
-
